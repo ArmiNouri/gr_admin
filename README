@@ -1,0 +1,11 @@
+This is your new Play application
+=====================================
+
+This file will be packaged with your application, when using `play dist`.
+
+
+To run the application, open a web browser and browse to localhost:9000
+
+The application will ask you to upload the HR file first, and the Departmental files later one by one.
+
+Upon submission, the application will list all the errors found across the documents. An annotated version of the HR file can also be found in the parent folder of the app. The name of the annotated file is identical to the name of the HR file, with a _output.xls suffix added to it. 

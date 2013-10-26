@@ -1,0 +1,16 @@
+@(message: String, fs: List[String])
+
+@main(message) {
+
+    @helper.form(routes.Application.getDept(), 'enctype -> "multipart/form-data") {
+        <h2>@message</h2>
+        <input type="file" name="Dept" />
+        <input type="submit" value = "Upload" /><br><br>
+        <ul>
+        @fs.map{f => <li>@f       <a href="@routes.Application.deleteDept(f)">Delete</a></li>}
+        </ul><br><br>
+        <a href = "@routes.Application.prcs">Done</a>
+
+    }
+
+}

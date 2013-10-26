@@ -1,0 +1,23 @@
+@(message: String, errors: List[error])
+
+@main("Here are the errors") {
+
+    <h2>@message</h2>
+        <table border = 1 cellpadding = 5>
+            <tr>
+                <th>Departmental file name</th>
+                <th>Location in departmental file</th>
+                <th>Location in HR file</th>
+                <th>Description</th>
+            </th>
+            @errors.sortBy(_.order).distinct.map{e =>
+                <tr>
+                    <td>@e.whichDept</td>
+                    <td>@e.whereDept</td>
+                    <td>@e.whereHR</td>
+                    <td>@e.what</td>
+                </tr>
+            }
+        </table>
+
+}

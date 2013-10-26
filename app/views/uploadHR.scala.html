@@ -1,0 +1,12 @@
+@(message: String)
+
+@main(message) {
+
+    @helper.form(routes.Application.getHR(), 'enctype -> "multipart/form-data") {
+        <h2>@message</h2>
+        <input type="file" name="HR" />
+        <input type="submit" value = "Next" />
+
+    }
+
+}
