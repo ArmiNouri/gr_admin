@@ -127,7 +127,7 @@ object File extends Controller {
       if (employees.filter(_.name == p.name).size == 0) errors = errors :+ new error(p.address, filename, "Row: " + p.address, "None", "Employee is listed on the HR file under the department " + p.college + " but cannot be found on the departmental file titled " + filename + ".")
       if (p.rate != mappings.hours_to_rate(p.hours)) errors = errors :+ new error(p.address, filename, "R" + p.address, "None", "Employee's comp rate is listed as " + p.rate + " but the same employee's weekly hours are listed as " + p.hours + " on the HR file.")
       for(m <- pcol.filter(_.name == p.name).groupBy(_.job)){
-        if (m._2.size > 1) errors = errors :+ new error(m._2.last.address, filename, "Row: " + m._2.last.address, "None", "Employee is listed multiple times under the department titled " + m._2.last.college + " under the same job.")
+        if (m._2.size > 1) errors = errors :+ new error(m._2.head.address, filename, "Row: " + m._2.head.address, "None", "Employee is listed multiple times under the department titled " + m._2.head.college + " under the same job.")
       }
     }
     errors
