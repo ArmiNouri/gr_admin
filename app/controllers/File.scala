@@ -112,7 +112,7 @@ object File extends Controller {
 
         else for (p <- p2.distinct) {
           val p = p2.head
-          if(str.equal(e.status, "rehire") && (p.start_date >= mappings.date || p.rehire_date == 0d)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'rehired' on the departmental file, but has a start date later than or equal to 9/1/2013 on the HR file, or doesn't have a rehire date on the HR file.")
+          if(str.equal(e.status, "rehire") && (p.start_date >= mappings.date || p.rehire_date.getOrElse(0d) == 0d)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'rehired' on the departmental file, but has a start date later than or equal to 9/1/2013 on the HR file, or doesn't have a rehire date on the HR file.")
           if(str.equal(e.status, "hire") && (p.start_date < mappings.date || p.rehire_date.getOrElse(0d) > 0d)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'new hire' on the departmental file, but has a start date earlier than 9/1/2013 on the HR file, or has a rehire date on the HR file.")
           if(!str.equal(e.position, mappings.job_to_position(p.job))) errors = errors :+ new error(p.address, filename, "M" + p.address, "F" + e.address, "Employee's job is listed as " + e.position + " on the departmental file, but as " + p.job + "on the HR file.")
           if(e.fte != mappings.hours_to_fte(p.hours)) errors = errors :+ new error(p.address, filename, "N" + p.address, "I" + e.address, "Employee's fte is listed as " + e.fte + " on the departmental file but the employee's weekly hours are listed as " + p.hours + " on the HR file.")
