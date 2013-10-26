@@ -51,6 +51,11 @@ class person (
                )
 {
   val mapper: Map[Name, person] = Map(this.name -> this)
+
+  def ==(that: person): Boolean = {
+    if(this.college == that.college && this.name == that.name && this.job == that.job) true
+    else false
+  }
 }
 
 class employee (
@@ -64,6 +69,11 @@ class employee (
                  )
 {
   val mapper: Map[Name, employee] = Map(this.name -> this)
+
+  def ==(that: employee): Boolean = {
+    if(this.college == that.college && this.name == that.name && this.position == that.position) true
+    else false
+  }
 }
 class cl (
   val address: String,
@@ -115,16 +125,21 @@ object str {
                   "alexis" -> " alex ali",
                   "robert" -> " bob rob",
                   "patrick" -> " pat" ,
-                  "aleks" -> "alex ali al",
-                  "aleksander" -> "alex ali al",
-                  "aleksandra" -> "alex ali",
-                  "aleksis" -> "alex ali",
-                  "catherine" -> "cathy cathie cat",
-                  "catherin" -> "cathy cathie cat",
-                  "Katherine" -> "cathy cathie cat",
-                  "Katherin" -> "cathy cathie cat",
-                  "kimberly" -> "kim",
-                  "rachel" -> "rach")
+                  "aleks" -> " alex ali al",
+                  "aleksander" -> " alex ali al",
+                  "aleksandra" -> " alex ali",
+                  "aleksis" -> " alex ali",
+                  "catherine" -> " kathy cathy cathie cat kat katie",
+                  "catherin" -> " kathy cathy cathie cat kat katie",
+                  "katherine" -> " kathy cathy cathie cat kat katie",
+                  "katherin" -> " kathy cathy cathie cat kat katie",
+                  "kathryn" -> " kathy cathy cathie cat kat katie",
+                  "ekatrina" -> " katrin kat katie katy",
+                  "elizabeth" -> " liz beth eliza elize",
+                  "bethanny" -> " beth",
+                  "bethenny" -> " beth",
+                  "kimberly" -> " kim",
+                  "rachel" -> " rach")
 
   def abbreviate(s: String): String = {
     s + " " + (for( x <- abbr_map if s contains x._1) yield x._2).mkString(" ")

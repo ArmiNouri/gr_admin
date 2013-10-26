@@ -107,17 +107,15 @@ object File extends Controller {
       if(p1.size == 0) errors = errors :+ new error(0, filename, "None", "Row: " + e.address, "Employee named " + e.name + " is listed on the departmental file titled '" + filename + "', but cannot be found on the HR file.")
       else {
         val p2 = p1.filter(x => x.college == e.college && mappings.job_to_position(x.job) == e.position)
-        if(p2.size > 1) errors = errors :+ new error(p2.last.address, filename, "Row: " + p2.last.address, "Row: " + e.address, "Employee is listed multiple times under the department titled " + e.college + " under the same job.")
 
         if(p2.size == 0) errors = errors :+ new error(0, filename, "None", "Row: " + e.address, "Employee named " + e.name + " is listed on the departmental file titled '" + filename + "' as a " + mappings.job_to_position.map(_.swap).apply(e.position) + ", but on the HR file, s/he is not listed under the same department with the same job.")
 
         else for (p <- p2.distinct) {
           val p = p2.head
-          if(str.equal(e.status, "rehire") && (p.start_date >= mappings.date || p.rehire_date == 0)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'rehired' on the departmental file, but has a start date later than or equal to 9/1/2013 on the HR file, or doesn't have a rehire date on the HR file.")
-          if(str.equal(e.status, "hire") && (p.start_date < mappings.date || p.rehire_date.getOrElse(0d) > 0)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'new hire' on the departmental file, but has a start date earlier than 9/1/2013 on the HR file, or has a rehire date on the HR file.")
+          if(str.equal(e.status, "rehire") && (p.start_date >= mappings.date || p.rehire_date == 0d)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'rehired' on the departmental file, but has a start date later than or equal to 9/1/2013 on the HR file, or doesn't have a rehire date on the HR file.")
+          if(str.equal(e.status, "hire") && (p.start_date < mappings.date || p.rehire_date.getOrElse(0d) > 0d)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'new hire' on the departmental file, but has a start date earlier than 9/1/2013 on the HR file, or has a rehire date on the HR file.")
           if(!str.equal(e.position, mappings.job_to_position(p.job))) errors = errors :+ new error(p.address, filename, "M" + p.address, "F" + e.address, "Employee's job is listed as " + e.position + " on the departmental file, but as " + p.job + "on the HR file.")
           if(e.fte != mappings.hours_to_fte(p.hours)) errors = errors :+ new error(p.address, filename, "N" + p.address, "I" + e.address, "Employee's fte is listed as " + e.fte + " on the departmental file but the employee's weekly hours are listed as " + p.hours + " on the HR file.")
-          //if(p.rate != mappings.hours_to_rate(p.hours)) errors = errors :+ new error(p.address, filename, "R" + p.address, "None", "Employee's comp rate is listed as " + p.rate + " but the same employee's weekly hours are listed as " + p.hours + " on the HR file.")
           if(!str.equal(e.period, "ay") && p.end_date > 41650.00) errors = errors :+ new error(p.address, filename, "J" + p.address, "J" + e.address, "Employee's appointment period is not yearly in the departmental file. But the expected end date on the HR file exceeds the end of the semester.")
         }
       }
@@ -126,9 +124,7 @@ object File extends Controller {
     for(p <- pcol){
       if (employees.filter(_.name == p.name).size == 0) errors = errors :+ new error(p.address, filename, "Row: " + p.address, "None", "Employee is listed on the HR file under the department " + p.college + " but cannot be found on the departmental file titled " + filename + ".")
       if (p.rate != mappings.hours_to_rate(p.hours)) errors = errors :+ new error(p.address, filename, "R" + p.address, "None", "Employee's comp rate is listed as " + p.rate + " but the same employee's weekly hours are listed as " + p.hours + " on the HR file.")
-      for(m <- pcol.filter(_.name == p.name).groupBy(_.job)){
-        if (m._2.size > 1) errors = errors :+ new error(m._2.head.address, filename, "Row: " + m._2.head.address, "None", "Employee is listed multiple times under the department titled " + m._2.head.college + " under the same job.")
-      }
+      if (pcol.filter(_ == p).size > 1) errors = errors :+ new error(p.address, filename, "Row: " + p.address, "None", "Employee is listed multiple times under the department titled " + p.college + " under the same job.")
     }
     errors
   }
