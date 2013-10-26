@@ -3,7 +3,7 @@ package models
 import excel._
 
 /**
- * User: ishiiyoshinori
+ * Using excel library by: ishiiyoshinori
  * Date: 11/05/04
  */
 
