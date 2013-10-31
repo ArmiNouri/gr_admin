@@ -56,15 +56,16 @@ object File extends Controller {
           } yield { val name = sheet.cellAt(3, i).stringValue.split(",")
                     new person(
                              i+1,
-                             sheet.cellAt(0, i).stringValue,
-                             sheet.cellAt(1, i).stringValue,
+                             try { sheet.cellAt(0, i).stringValue } catch { case e: Throwable => throw new Exception("No string value at HR file cell: " + sheet.cellAt(0, i).addr) },
+                             try { sheet.cellAt(1, i).stringValue } catch { case e: Throwable => throw new Exception("No string value at HR file cell: " + sheet.cellAt(1, i).addr) },
                              new Name( name(1), name(0) ),
-                             sheet.cellAt(7, i).numericValue.toDouble,
-                             Some(sheet.cellAt(8, i).numericValue.toDouble),
-                             sheet.cellAt(9, i).numericValue.toDouble,
-                             sheet.cellAt(12, i).stringValue,
-                             sheet.cellAt(13, i).numericValue.toDouble,
-                             sheet.cellAt(17, i).numericValue.toDouble) }
+                             try { sheet.cellAt(7, i).numericValue.toDouble } catch { case e: Throwable => throw new Exception("No numeric value at HR file cell: " + sheet.cellAt(7, i).addr) },
+                             try { Some(sheet.cellAt(8, i).numericValue.toDouble) } catch { case e: Throwable => throw new Exception("No numeric value at HR file cell: " + sheet.cellAt(8, i).addr) },
+                             try { sheet.cellAt(9, i).numericValue.toDouble } catch { case e: Throwable => throw new Exception("No numeric value at HR file cell: " + sheet.cellAt(9, i).addr) },
+                             try { sheet.cellAt(12, i).stringValue}  catch { case e: Throwable => throw new Exception("No numeric value at HR file cell: " + sheet.cellAt(12, i).addr) },
+                             try { sheet.cellAt(13, i).numericValue.toDouble } catch { case e: Throwable => throw new Exception("No numeric value at HR file cell: " + sheet.cellAt(13, i).addr) },
+                             try { sheet.cellAt(17, i).numericValue.toDouble} catch { case e: Throwable => throw new Exception("No numeric value at HR file cell: " + sheet.cellAt(17, i).addr) }
+                    )}
 
         people.toList
       }
@@ -86,12 +87,13 @@ object File extends Controller {
           } yield {
             new employee(
               i+1,
-              sheet.cellAt(0, i).stringValue,
-              new Name(sheet.cellAt(1, i).stringValue, sheet.cellAt(2, i).stringValue),
-              sheet.cellAt(5, i).stringValue,
-              sheet.cellAt(7, i).stringValue,
-              sheet.cellAt(8, i).numericValue.toDouble,
-              sheet.cellAt(9, i).stringValue) }
+              try { sheet.cellAt(0, i).stringValue } catch { case e: Throwable => throw new Exception("No string value at Dept file cell: " + sheet.cellAt(0, i).addr) },
+              try { new Name(sheet.cellAt(1, i).stringValue, sheet.cellAt(2, i).stringValue)  } catch { case e: Throwable => throw new Exception("No string value at Dept file cell: " + sheet.cellAt(2, i).addr) },
+              try { sheet.cellAt(5, i).stringValue } catch { case e: Throwable => throw new Exception("No string value at Dept file cell: " + sheet.cellAt(5, i).addr) },
+              try { sheet.cellAt(7, i).stringValue  } catch { case e: Throwable => throw new Exception("No string value at Dept file cell: " + sheet.cellAt(7, i).addr) },
+              try { sheet.cellAt(8, i).numericValue.toDouble  } catch { case e: Throwable => throw new Exception("No numeric value at Dept file cell: " + sheet.cellAt(8, i).addr) },
+              try { sheet.cellAt(9, i).stringValue  } catch { case e: Throwable => throw new Exception("No string value at Dept file cell: " + sheet.cellAt(9, i).addr) }
+                ) }
 
         employees.toList
       }
