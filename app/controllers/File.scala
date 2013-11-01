@@ -87,12 +87,12 @@ object File extends Controller {
           } yield {
             new employee(
               i+1,
-              try { sheet.cellAt(0, i).stringValue } catch { case e: Throwable => throw new Exception("No string value at Dept file cell: " + sheet.cellAt(0, i).addr) },
-              try { new Name(sheet.cellAt(1, i).stringValue, sheet.cellAt(2, i).stringValue)  } catch { case e: Throwable => throw new Exception("No string value at Dept file cell: " + sheet.cellAt(2, i).addr) },
-              try { sheet.cellAt(5, i).stringValue } catch { case e: Throwable => throw new Exception("No string value at Dept file cell: " + sheet.cellAt(5, i).addr) },
-              try { sheet.cellAt(7, i).stringValue  } catch { case e: Throwable => throw new Exception("No string value at Dept file cell: " + sheet.cellAt(7, i).addr) },
-              try { sheet.cellAt(8, i).numericValue.toDouble  } catch { case e: Throwable => throw new Exception("No numeric value at Dept file cell: " + sheet.cellAt(8, i).addr) },
-              try { sheet.cellAt(9, i).stringValue  } catch { case e: Throwable => throw new Exception("No string value at Dept file cell: " + sheet.cellAt(9, i).addr) }
+              try { sheet.cellAt(0, i).stringValue } catch { case e: Throwable => throw new Exception("No string value at college file cell: " + sheet.cellAt(0, i).addr) },
+              try { new Name(sheet.cellAt(1, i).stringValue, sheet.cellAt(2, i).stringValue)  } catch { case e: Throwable => throw new Exception("No string value at college file cell: " + sheet.cellAt(2, i).addr) },
+              try { sheet.cellAt(5, i).stringValue } catch { case e: Throwable => throw new Exception("No string value at college file cell: " + sheet.cellAt(5, i).addr) },
+              try { sheet.cellAt(7, i).stringValue  } catch { case e: Throwable => throw new Exception("No string value at college file cell: " + sheet.cellAt(7, i).addr) },
+              try { sheet.cellAt(8, i).numericValue.toDouble  } catch { case e: Throwable => throw new Exception("No numeric value at college file cell: " + sheet.cellAt(8, i).addr) },
+              try { sheet.cellAt(9, i).stringValue  } catch { case e: Throwable => throw new Exception("No string value at college file cell: " + sheet.cellAt(9, i).addr) }
                 ) }
 
         employees.toList
@@ -102,31 +102,31 @@ object File extends Controller {
 
   def compare(employees: List[employee], people: List[person], filename: String): List[error] = {
     var errors: List[error] = List.empty
-    if(employees.size == 0) throw new Exception("Departmental file titled " + filename + " is empty.")
+    if(employees.size == 0) throw new Exception("College file titled " + filename + " is empty.")
     if(people.size == 0) throw new Exception("HR file is empty.")
     for (e <- employees) {
       val p1 = people.filter(_.name == e.name)
-      if(p1.size == 0) errors = errors :+ new error(0, filename, "None", "Row: " + e.address, "Employee named " + e.name + " is listed on the departmental file titled '" + filename + "', but cannot be found on the HR file.")
+      if(p1.size == 0) errors = errors :+ new error(0, filename, "None", "Row: " + e.address, "Employee named " + e.name + " is listed on the college file titled '" + filename + "', but cannot be found on the HR file.")
       else {
         val p2 = p1.filter(x => x.college == e.college && mappings.job_to_position(x.job) == e.position)
 
-        if(p2.size == 0) errors = errors :+ new error(0, filename, "None", "Row: " + e.address, "Employee named " + e.name + " is listed on the departmental file titled '" + filename + "' as a " + mappings.job_to_position.map(_.swap).apply(e.position) + ", but on the HR file, s/he is not listed under the same department with the same job.")
+        if(p2.size == 0) errors = errors :+ new error(0, filename, "None", "Row: " + e.address, "Employee named " + e.name + " is listed on the college file titled '" + filename + "' as a " + mappings.job_to_position.map(_.swap).apply(e.position) + ", but on the HR file, s/he is not listed under the same department with the same job.")
 
         else for (p <- p2.distinct) {
           val p = p2.head
-          if(str.equal(e.status, "rehire") && (p.start_date >= mappings.date || p.rehire_date.getOrElse(0d) == 0d)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'rehired' on the departmental file, but has a start date later than or equal to 9/1/2013 on the HR file, or doesn't have a rehire date on the HR file.")
-          if(str.equal(e.status, "hire") && (p.start_date < mappings.date || p.rehire_date.getOrElse(0d) > 0d)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'new hire' on the departmental file, but has a start date earlier than 9/1/2013 on the HR file, or has a rehire date on the HR file.")
-          if(!str.equal(e.position, mappings.job_to_position(p.job))) errors = errors :+ new error(p.address, filename, "M" + p.address, "F" + e.address, "Employee's job is listed as " + e.position + " on the departmental file, but as " + p.job + "on the HR file.")
-          if(e.fte != mappings.hours_to_fte(p.hours)) errors = errors :+ new error(p.address, filename, "N" + p.address, "I" + e.address, "Employee's fte is listed as " + e.fte + " on the departmental file but the employee's weekly hours are listed as " + p.hours + " on the HR file.")
-          if(!str.equal(e.period, "ay") && p.end_date > 41650.00) errors = errors :+ new error(p.address, filename, "J" + p.address, "J" + e.address, "Employee's appointment period is not yearly in the departmental file. But the expected end date on the HR file exceeds the end of the semester.")
+          if(str.equal(e.status, "rehire") && (p.start_date >= mappings.date || p.rehire_date.getOrElse(0d) == 0d)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'rehired' on the college file, but has a start date later than or equal to 9/1/2013 on the HR file, or doesn't have a rehire date on the HR file.")
+          if(str.equal(e.status, "hire") && (p.start_date < mappings.date || p.rehire_date.getOrElse(0d) > 0d)) errors = errors :+ new error(p.address, filename, "H" + p.address, "F" + e.address, "Employee is listed as 'new hire' on the college file, but has a start date earlier than 9/1/2013 on the HR file, or has a rehire date on the HR file.")
+          if(!str.equal(e.position, mappings.job_to_position(p.job))) errors = errors :+ new error(p.address, filename, "M" + p.address, "F" + e.address, "Employee's job is listed as " + e.position + " on the college file, but as " + p.job + "on the HR file.")
+          if(e.fte != mappings.hours_to_fte(p.hours)) errors = errors :+ new error(p.address, filename, "N" + p.address, "I" + e.address, "Employee's fte is listed as " + e.fte + " on the college file but the employee's weekly hours are listed as " + p.hours + " on the HR file.")
+          if(!str.equal(e.period, "ay") && p.end_date > 41650.00) errors = errors :+ new error(p.address, filename, "J" + p.address, "J" + e.address, "Employee's appointment period is not yearly in the college file. But the expected end date on the HR file exceeds the end of the semester.")
         }
       }
     }
     val pcol = people.filter(x => x.college == employees.head.college)
     for(p <- pcol){
-      if (employees.filter(_.name == p.name).size == 0) errors = errors :+ new error(p.address, filename, "Row: " + p.address, "None", "Employee is listed on the HR file under the department " + p.college + " but cannot be found on the departmental file titled " + filename + ".")
+      if (employees.filter(_.name == p.name).size == 0) errors = errors :+ new error(p.address, filename, "Row: " + p.address, "None", "Employee is listed on the HR file under the college of " + p.college + " but cannot be found on the college file titled " + filename + ".")
       if (p.rate != mappings.hours_to_rate(p.hours)) errors = errors :+ new error(p.address, filename, "R" + p.address, "None", "Employee's comp rate is listed as " + p.rate + " but the same employee's weekly hours are listed as " + p.hours + " on the HR file.")
-      if (pcol.filter(_ == p).size > 1) errors = errors :+ new error(p.address, filename, "Row: " + p.address, "None", "Employee is listed multiple times under the department titled " + p.college + " under the same job.")
+      if (pcol.filter(_ == p).size > 1) errors = errors :+ new error(p.address, filename, "Row: " + p.address, "None", "Employee is listed multiple times under the college of " + p.college + " under the same job.")
     }
     errors
   }

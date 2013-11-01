@@ -53,7 +53,7 @@ class person (
   val mapper: Map[Name, person] = Map(this.name -> this)
 
   def ==(that: person): Boolean = {
-    if(this.college == that.college && this.name.toString == that.name.toString && this.job == that.job) true
+    if(this.college == that.college && this.dept == that.dept && this.name.toString == that.name.toString && this.job == that.job) true
     else false
   }
 }

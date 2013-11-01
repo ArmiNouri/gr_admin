@@ -20,7 +20,7 @@ object Application extends Controller {
     val f = request.body.file("HR")
     if (f.size > 0 ){
       hrFile = new record(Some(f.head.filename), Some(File.uploadHR(f)))
-      Ok(views.html.uploadDept("Please upload your departmental files one by one:", List()))
+      Ok(views.html.uploadDept("Please upload your college files one by one:", List()))
     }
     else {
       BadRequest("File not found!")
@@ -32,7 +32,7 @@ object Application extends Controller {
     if (f.size > 0 ){
       deptFiles = deptFiles :+ new record(Some(f.head.filename), Some(File.uploadDept(f)))
       println(deptFiles)
-      Ok(views.html.uploadDept("Please upload your departmental files one by one:", deptFiles.map(_.filename.getOrElse("???"))))
+      Ok(views.html.uploadDept("Please upload your college files one by one:", deptFiles.map(_.filename.getOrElse("???"))))
     }
     else {
       BadRequest("File not found!")
@@ -41,12 +41,12 @@ object Application extends Controller {
 
   def deleteDept(f: String) = Action {
     deptFiles = deptFiles.filter(_.filename == f)
-    Ok(views.html.uploadDept("Please upload your departmental files one by one:", deptFiles.map(_.filename.getOrElse("???"))))
+    Ok(views.html.uploadDept("Please upload your college files one by one:", deptFiles.map(_.filename.getOrElse("???"))))
   }
 
   def prcs = Action {
     if(deptFiles.size == 0){
-      Ok(views.html.uploadDept("You did not add any departmental files. Please upload your files one by one:", deptFiles.map(_.filename.getOrElse("???"))))
+      Ok(views.html.uploadDept("You did not add any college files. Please upload your files one by one:", deptFiles.map(_.filename.getOrElse("???"))))
     } else {
       val errors = (for { d <- deptFiles } yield File.compare(File.prcsDept(d.workbook, d.filename), File.prcsHR(hrFile.workbook), d.filename.getOrElse("???"))).toList.flatten
       File.prcsOutput(hrFile.workbook, errors, hrFile.filename.getOrElse("???"))
