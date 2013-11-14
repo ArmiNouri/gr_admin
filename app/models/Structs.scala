@@ -17,11 +17,16 @@ class record (
 class error (
   val order: Int,
   val whichDept: String,
+  val whichPerson: String,
   val whereHR: String,
   val whereDept: String,
   val what: String
               ) {
   override def toString = "[ which dept: " + whichDept + ", where in HR: " + whereHR + ", where in Dept: " + whereDept + ", what: " + what + " ]"
+  def ==(that: error): Boolean = {
+    if (this.whichDept == that.whichDept && this.whichPerson == that.whichPerson && this.whereHR == that.whereHR && this.whereDept == that.whichDept && this.what == that.what) true
+    else false
+  }
 }
 
 class Name (
