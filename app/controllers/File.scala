@@ -110,7 +110,7 @@ object File extends Controller {
       else {
         val p2 = p1.filter(x => x.college == e.college && mappings.job_to_position(x.job) == e.position)
 
-        if(p2.size == 0) errors = errors :+ new error(0, filename, "None", "Row: " + e.address, "Employee named " + e.name + " is listed on the college file titled '" + filename + "' as a " + mappings.job_to_position.map(_.swap).apply(e.position) + ", but on the HR file, s/he is not listed under the same department with the same job.")
+        if(p2.size == 0) { val pos = try { mappings.job_to_position.map(_.swap).apply(e.position) } catch { case x: Throwable => e.position  + "? (unknown position) " }; errors = errors :+ new error(0, filename, "None", "Row: " + e.address, "Employee named " + e.name + " is listed on the college file titled '" + filename + "' as a " + pos + ", but on the HR file, s/he is not listed under the same department with the same job.") }
 
         else for (p <- p2.distinct) {
           val p = p2.head
@@ -125,7 +125,8 @@ object File extends Controller {
     val pcol = people.filter(x => x.college == employees.head.college)
     for(p <- pcol){
       if (employees.filter(_.name == p.name).size == 0) errors = errors :+ new error(p.address, filename, "Row: " + p.address, "None", "Employee is listed on the HR file under the college of " + p.college + " but cannot be found on the college file titled " + filename + ".")
-      if (p.rate != mappings.hours_to_rate(p.hours)) errors = errors :+ new error(p.address, filename, "R" + p.address, "None", "Employee's comp rate is listed as " + p.rate + " but the same employee's weekly hours are listed as " + p.hours + " on the HR file.")
+      val rate = try {mappings.hours_to_rate(p.hours)}catch{case x:Throwable => -1}
+      if (p.rate != rate) errors = errors :+ new error(p.address, filename, "R" + p.address, "None", "Employee's comp rate is listed as " + (if(rate<0) "an unknown value." else p.rate + " but the same employee's weekly hours are listed as " + p.hours + " on the HR file."))
       if (pcol.filter(_ == p).size > 1) errors = errors :+ new error(p.address, filename, "Row: " + p.address, "None", "Employee is listed multiple times under the college of " + p.college + " under the same job.")
     }
     errors

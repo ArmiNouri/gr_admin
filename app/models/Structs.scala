@@ -158,7 +158,8 @@ object mappings {
               "Graduate Teaching Assistant II" -> "TAII",
               "Graduate Administrative Assist" -> "AA",
               "Graduate Administrative Assist I" -> "AAI",
-              "Graduate Administrative ASsist II" -> "AAII")
+              "Graduate Administrative ASsist II" -> "AAII",
+              "Graduate Assistant" -> "GA")
   val hours_to_fte: Map[Double, Double] = Map(
               18d -> 1.00,
               13.5 -> 0.75,
